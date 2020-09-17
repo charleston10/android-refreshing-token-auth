@@ -1,4 +1,4 @@
-package com.charleston.auth
+package com.charleston.auth.local
 
 import android.util.Log
 import io.reactivex.Observable

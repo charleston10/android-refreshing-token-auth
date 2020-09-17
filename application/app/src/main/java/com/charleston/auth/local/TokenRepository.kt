@@ -1,4 +1,4 @@
-package com.charleston.auth
+package com.charleston.auth.local
 
 object TokenRepository {
 

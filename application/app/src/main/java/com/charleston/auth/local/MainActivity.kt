@@ -1,8 +1,9 @@
-package com.charleston.auth
+package com.charleston.auth.local
 
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.charleston.auth.R
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
