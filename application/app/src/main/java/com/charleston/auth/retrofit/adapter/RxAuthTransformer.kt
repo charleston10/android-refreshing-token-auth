@@ -1,9 +1,7 @@
 package com.charleston.auth.retrofit.adapter
 
-import io.reactivex.CompletableTransformer
-import io.reactivex.MaybeTransformer
-import io.reactivex.ObservableTransformer
-import io.reactivex.SingleTransformer
+import io.reactivex.*
+import retrofit2.HttpException
 
 object RxAuthTransformer {
 
@@ -16,10 +14,49 @@ object RxAuthTransformer {
     }
 
     fun <R> transformObservable(): ObservableTransformer<R, Any> {
-        return ObservableTransformer { upstream -> upstream.map { it } }
+        return ObservableTransformer { upstream: Observable<*> ->
+            upstream
+                .map { it }
+                .flatMap {
+                    if (validateDateToken()) {
+                        Observable.just(it)
+                    } else {
+                        requestAgain(upstream)
+                    }
+                }
+                .onErrorResumeNext { e: Throwable ->
+                    if (e is HttpException && e.code() == 401) {
+                        return@onErrorResumeNext requestAgain(upstream)
+                    } else {
+                        return@onErrorResumeNext Observable.error(e)
+                    }
+                }
+        }
     }
 
     fun transformCompletable(): CompletableTransformer {
         return CompletableTransformer { upstream -> upstream }
+    }
+
+    private fun requestNewToken(): Observable<String> {
+        return Observable.just("521651d546as1dasfas")
+    }
+
+    private fun validateDateToken(): Boolean {
+        return false
+    }
+
+    private fun requestAgain(upstream: Observable<*>): Observable<*> {
+       return Observable.fromCallable {
+            //cripto
+           "s4ddas5451da5s24d1a"
+        }
+            .flatMap {
+                requestNewToken()
+                    .flatMap { novoToken ->
+                        upstream
+                    }
+            }
+
     }
 }
